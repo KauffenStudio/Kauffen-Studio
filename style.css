@@ -83,7 +83,6 @@ body.intro-active { overflow: hidden; }
   line-height: 1.1;
   color: #ffffff;
   will-change: transform;
-  transform: translateY(160px); /* start below the clip area */
 }
 .intro-msg--final {
   font-style: italic;

@@ -13,7 +13,14 @@ function initIntro(onComplete) {
   const msgEl   = document.getElementById('introMsg');
   const barFill = document.getElementById('introBarFill');
   const counter = document.getElementById('introCounter');
-  if (!intro || !msgEl) { onComplete?.(); return; }
+
+  // Bail out if elements missing or GSAP not loaded
+  if (!intro || !msgEl || typeof gsap === 'undefined') {
+    intro?.remove();
+    document.body.classList.remove('intro-active');
+    onComplete?.();
+    return;
+  }
 
   const msgs = currentLang === 'pt'
     ? ['Olá.', 'Criamos a web.', 'Estratégia. Design. Código.', 'Kauffen Studio.']
@@ -21,73 +28,79 @@ function initIntro(onComplete) {
 
   document.body.classList.add('intro-active');
 
-  let masterTl;
+  let finished = false;
+  let timers   = [];
 
-  const exitIntro = (instant) => {
-    masterTl?.kill();
+  const finish = (instant) => {
+    if (finished) return;
+    finished = true;
+    timers.forEach(t => clearTimeout(t));
+    gsap.killTweensOf(msgEl);
     if (barFill) gsap.killTweensOf(barFill);
-    document.removeEventListener('keydown', onKey);
+    document.removeEventListener('keydown', onSkip);
 
-    if (instant) {
+    const done = () => {
       if (intro.parentNode) intro.remove();
       document.body.classList.remove('intro-active');
       onComplete?.();
+    };
+
+    if (instant) {
+      done();
     } else {
-      gsap.to(intro, {
-        yPercent: -100, duration: .95, ease: 'power4.inOut',
-        onComplete: () => {
-          if (intro.parentNode) intro.remove();
-          document.body.classList.remove('intro-active');
-          onComplete?.();
-        },
-      });
+      gsap.to(intro, { yPercent: -100, duration: .9, ease: 'power4.inOut', onComplete: done });
     }
   };
 
-  const onKey = () => exitIntro(true);
-  intro.addEventListener('click', () => exitIntro(true), { once: true });
-  document.addEventListener('keydown', onKey, { once: true });
+  const onSkip = () => finish(true);
+  intro.addEventListener('click',    () => finish(true), { once: true });
+  document.addEventListener('keydown', onSkip,           { once: true });
+  timers.push(setTimeout(() => finish(true), 10000)); // hard safety cap
 
-  // Safety net: if something goes wrong, always exit after 12s
-  const safetyTimer = setTimeout(() => exitIntro(true), 12000);
-  const _origExit = exitIntro;
-  const exitIntroSafe = (instant) => { clearTimeout(safetyTimer); _origExit(instant); };
-  // Patch the references
-  intro.removeEventListener('click', () => exitIntro(true));
-  intro.addEventListener('click', () => exitIntroSafe(true), { once: true });
+  // Step-by-step: set text → slide in → hold → slide out → next
+  let step = 0;
 
-  masterTl = gsap.timeline({ onComplete: () => exitIntroSafe(false) });
+  const HOLD = [600, 750, 750, 1200]; // ms hold per message
+  const IN   = [620, 620, 620, 780];  // ms slide-in per message
+  const OUT  = 300;                   // ms slide-out
 
-  msgs.forEach((text, i) => {
+  const showStep = () => {
+    if (finished || step >= msgs.length) { finish(false); return; }
+
+    const i      = step;
+    const text   = msgs[i];
     const isLast = i === msgs.length - 1;
-    const inDur  = isLast ? 0.78 : 0.62;
-    const hold   = i === 0 ? 0.58 : isLast ? 1.15 : 0.72;
 
-    masterTl
-      .call(() => {
-        // Use large fixed-pixel offset — reliable even when element starts empty
-        msgEl.textContent = text;
-        msgEl.classList.toggle('intro-msg--final', isLast);
-        if (counter) counter.textContent = `0${i + 1} — 0${msgs.length}`;
-        gsap.set(msgEl, { y: 160 }); // set AFTER text so height is computed
-      })
-      .to(msgEl, { y: 0, duration: inDur, ease: 'power4.out' })
-      .to({}, { duration: hold }); // hold
+    if (counter) counter.textContent = `0${i + 1} — 0${msgs.length}`;
+    msgEl.classList.toggle('intro-msg--final', isLast);
+    msgEl.textContent = text;
 
-    if (!isLast) {
-      masterTl.to(msgEl, { y: -160, duration: .3, ease: 'power4.in' });
-    }
-  });
+    // Position below clip area, then animate up
+    gsap.set(msgEl,  { y: 120 });
+    gsap.to(msgEl, {
+      y: 0, duration: IN[i] / 1000, ease: 'power4.out',
+      onComplete: () => {
+        const t = setTimeout(() => {
+          if (finished) return;
+          if (isLast) {
+            finish(false);
+          } else {
+            gsap.to(msgEl, {
+              y: -120, duration: OUT / 1000, ease: 'power4.in',
+              onComplete: () => { step++; showStep(); },
+            });
+          }
+        }, HOLD[i]);
+        timers.push(t);
+      },
+    });
+  };
 
-  // Progress bar — total duration of all steps
-  const totalDur = msgs.reduce((sum, _, i) => {
-    const isLast = i === msgs.length - 1;
-    return sum
-      + (isLast ? 0.78 : 0.62)              // in
-      + (i === 0 ? 0.58 : isLast ? 1.15 : 0.72) // hold
-      + (isLast ? 0 : 0.3);                 // out
-  }, 0);
-  if (barFill) gsap.to(barFill, { width: '100%', duration: totalDur, ease: 'none' });
+  // Progress bar fill over approximate total duration
+  const totalMs = HOLD.reduce((a, b) => a + b, 0) + IN.reduce((a, b) => a + b, 0) + OUT * 3;
+  if (barFill) gsap.to(barFill, { width: '100%', duration: totalMs / 1000, ease: 'none' });
+
+  showStep();
 }
 
 /* ── i18n ─────────────────────────────────────────────────── */
