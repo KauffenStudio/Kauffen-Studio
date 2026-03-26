@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kauffen Studio — Web Design &amp; Development</title>
+  <meta name="description" content="A boutique design studio crafting custom websites, hosting and digital experiences for ambitious brands.">
+  <meta name="theme-color" content="#F8F6F1">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== INTRO SEQUENCE ===== -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <div class="intro-msg-wrap">
+        <p class="intro-msg" id="introMsg"></p>
+      </div>
+    </div>
+    <span class="intro-counter" id="introCounter" aria-hidden="true">01 — 04</span>
+    <span class="intro-skip"    aria-hidden="true">Click to skip</span>
+    <div class="intro-bar">
+      <div class="intro-bar-fill" id="introBarFill"></div>
+    </div>
+  </div>
+
+  <!-- Custom cursor: dot + lagging ring -->
+  <div class="cursor-dot"  id="cursorDot"  aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true">
+    <span class="cursor-label" id="cursorLabel"></span>
+  </div>
+
+  <!-- Scroll progress -->
+  <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
+
+  <!-- ===== NAV ===== -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+
+      <a href="#" class="logo" aria-label="Kauffen Studio — Back to top">
+        <span class="logo-mark" aria-hidden="true">
+          <svg class="mark-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="ring-a" cx="18" cy="18" r="14" stroke="currentColor" stroke-width="1.1" stroke-dasharray="4.5 7"/>
+            <circle class="ring-b" cx="18" cy="18" r="8"  stroke="currentColor" stroke-width="1.3" stroke-dasharray="6.5 5"/>
+            <circle cx="18" cy="18" r="1.8" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="logo-text">
+          <span class="logo-kf">KAUFFEN</span>
+          <span class="logo-st">STUDIO</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#work"     class="nav-link" data-i18n="nav.work">Work</a>
+        <a href="#services" class="nav-link" data-i18n="nav.services">Services</a>
+        <a href="#about"    class="nav-link" data-i18n="nav.about">About</a>
+        <a href="#contact"  class="nav-link" data-i18n="nav.contact">Contact</a>
+      </nav>
+
+      <div class="nav-end">
+        <div class="lang-toggle" id="langToggle" aria-label="Toggle language">
+          <button class="lang-opt" data-lang="en" onclick="applyLang('en')">EN</button>
+          <span class="lang-pill" id="langPill"></span>
+          <button class="lang-opt" data-lang="pt" onclick="applyLang('pt')">PT</button>
+        </div>
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-hidden="true" aria-label="Navigation menu">
+    <div class="mobile-menu-inner">
+      <nav class="mobile-nav">
+        <a href="#work"     class="mob-link" data-i18n="nav.work">Work</a>
+        <a href="#services" class="mob-link" data-i18n="nav.services">Services</a>
+        <a href="#about"    class="mob-link" data-i18n="nav.about">About</a>
+        <a href="#contact"  class="mob-link" data-i18n="nav.contact">Contact</a>
+      </nav>
+      <a href="https://instagram.com/kauffen.studio" class="mob-social" target="_blank" rel="noopener">@kauffen.studio</a>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+
+    <!-- Background large mark -->
+    <div class="hero-bg-mark" aria-hidden="true">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="ring-a" cx="18" cy="18" r="14" stroke="currentColor" stroke-width="0.6" stroke-dasharray="4.5 7"/>
+        <circle class="ring-b" cx="18" cy="18" r="8"  stroke="currentColor" stroke-width="0.8" stroke-dasharray="6.5 5"/>
+        <circle cx="18" cy="18" r="1.8" fill="currentColor"/>
+      </svg>
+    </div>
+
+    <div class="hero-inner">
+      <p class="hero-tag" data-i18n="hero.tag">Web Design &amp; Development Studio</p>
+      <h1 class="hero-title">
+        <span class="clip-wrap"><span class="clip-inner"         data-i18n="hero.l1">We design &amp;</span></span>
+        <span class="clip-wrap"><span class="clip-inner hero-em" data-i18n="hero.l2">build digital</span></span>
+        <span class="clip-wrap"><span class="clip-inner"         data-i18n="hero.l3">experiences.</span></span>
+      </h1>
+      <div class="hero-foot">
+        <p class="hero-sub" data-i18n="hero.sub">Custom websites, hosting &amp; privacy<br>for every kind of brand.</p>
+        <div class="hero-scroll-cue" aria-hidden="true">
+          <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
+            <rect x="1" y="1" width="16" height="22" rx="8" stroke="currentColor" stroke-width="1.2"/>
+            <circle class="scroll-dot-anim" cx="9" cy="8" r="2.2" fill="currentColor"/>
+          </svg>
+          <span data-i18n="hero.scroll">Scroll</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE 1 ===== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>WEB DESIGN</span><span class="m-dot">·</span>
+      <span>DEVELOPMENT</span><span class="m-dot">·</span>
+      <span>HOSTING</span><span class="m-dot">·</span>
+      <span>PRIVACY</span><span class="m-dot">·</span>
+      <span>BRANDING</span><span class="m-dot">·</span>
+      <span>UI / UX</span><span class="m-dot">·</span>
+      <span>WEB DESIGN</span><span class="m-dot">·</span>
+      <span>DEVELOPMENT</span><span class="m-dot">·</span>
+      <span>HOSTING</span><span class="m-dot">·</span>
+      <span>PRIVACY</span><span class="m-dot">·</span>
+      <span>BRANDING</span><span class="m-dot">·</span>
+      <span>UI / UX</span><span class="m-dot">·</span>
+    </div>
+  </div>
+
+  <!-- ===== WORK / SHOWCASE ===== -->
+  <section class="showcase" id="work">
+    <div class="showcase-top">
+      <div class="showcase-label">
+        <span class="eyebrow" data-i18n="work.label">Selected Work</span>
+        <h2 class="showcase-title">
+          <span class="clip-wrap"><span class="clip-inner" data-i18n="work.title">Projects</span></span>
+        </h2>
+      </div>
+      <div class="showcase-nav">
+        <span class="sc-counter"><span id="scCur">01</span> / 03</span>
+        <button class="sc-arr" id="scPrev" aria-label="Previous project" data-magnetic>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="sc-arr" id="scNext" aria-label="Next project" data-magnetic>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-vp">
+      <div class="carousel-track" id="carouselTrack">
+
+        <!-- Slide 0: Anna Capocchi -->
+        <div class="c-slide" data-idx="0">
+          <div class="browser">
+            <div class="browser-bar">
+              <span class="b-dots"><i></i><i></i><i></i></span>
+              <span class="b-url">annacapocchi.com</span>
+              <a href="https://annacapocchi.com" target="_blank" rel="noopener" class="b-visit" aria-label="Visit Anna Capocchi">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H5M11 1V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+            <div class="browser-screen" data-screen>
+              <iframe src="https://annacapocchi.com" title="Anna Capocchi" scrolling="no" loading="lazy" sandbox="allow-same-origin allow-scripts" class="site-iframe" data-iframe></iframe>
+              <div class="iframe-fallback" data-fallback data-letter="AC">
+                <span class="fb-name">Anna Capocchi</span>
+                <span class="fb-sub">annacapocchi.com</span>
+                <a href="https://annacapocchi.com" target="_blank" rel="noopener" class="fb-btn" data-i18n="work.visit">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 1: JetWash 24 -->
+        <div class="c-slide" data-idx="1">
+          <div class="browser">
+            <div class="browser-bar">
+              <span class="b-dots"><i></i><i></i><i></i></span>
+              <span class="b-url">jetwash24.com</span>
+              <a href="https://jetwash24.com" target="_blank" rel="noopener" class="b-visit" aria-label="Visit JetWash 24">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H5M11 1V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+            <div class="browser-screen" data-screen>
+              <iframe src="https://jetwash24.com" title="JetWash 24" scrolling="no" loading="lazy" sandbox="allow-same-origin allow-scripts" class="site-iframe" data-iframe></iframe>
+              <div class="iframe-fallback" data-fallback data-letter="JW">
+                <span class="fb-name">JetWash 24</span>
+                <span class="fb-sub">jetwash24.com</span>
+                <a href="https://jetwash24.com" target="_blank" rel="noopener" class="fb-btn" data-i18n="work.visit">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: iStarTec -->
+        <div class="c-slide" data-idx="2">
+          <div class="browser">
+            <div class="browser-bar">
+              <span class="b-dots"><i></i><i></i><i></i></span>
+              <span class="b-url">istartec.co</span>
+              <a href="https://istartec.co" target="_blank" rel="noopener" class="b-visit" aria-label="Visit iStarTec">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H5M11 1V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+            <div class="browser-screen" data-screen>
+              <iframe src="https://istartec.co" title="iStarTec" scrolling="no" loading="lazy" sandbox="allow-same-origin allow-scripts" class="site-iframe" data-iframe></iframe>
+              <div class="iframe-fallback" data-fallback data-letter="IS">
+                <span class="fb-name">iStarTec</span>
+                <span class="fb-sub">istartec.co</span>
+                <a href="https://istartec.co" target="_blank" rel="noopener" class="fb-btn" data-i18n="work.visit">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /carousel-track -->
+    </div><!-- /carousel-vp -->
+
+    <!-- Project info + dots (updated via JS) -->
+    <div class="showcase-foot">
+      <div class="sc-info">
+        <span class="sc-num" id="scNum">01 —</span>
+        <div class="sc-text">
+          <h3 class="sc-name" id="scName">Anna Capocchi</h3>
+          <p class="sc-cat" id="scCat" data-i18n="work.p1.desc">Brand &amp; Portfolio Website</p>
+        </div>
+        <a href="https://annacapocchi.com" target="_blank" rel="noopener" class="sc-visit" id="scVisit" data-i18n="work.visit">Visit Site ↗</a>
+      </div>
+      <div class="sc-dots" id="scDots">
+        <button class="sc-dot active" data-goto="0" aria-label="Project 1"></button>
+        <button class="sc-dot" data-goto="1" aria-label="Project 2"></button>
+        <button class="sc-dot" data-goto="2" aria-label="Project 3"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="services" id="services">
+    <div class="services-inner">
+      <div class="services-head">
+        <span class="eyebrow" data-i18n="svc.label">What We Do</span>
+        <h2 class="services-title">
+          <span class="clip-wrap"><span class="clip-inner" data-i18n="svc.title">Services</span></span>
+        </h2>
+      </div>
+      <ul class="svc-list">
+        <li class="svc">
+          <span class="svc-num">01</span>
+          <div class="svc-body">
+            <h3 class="svc-name" data-i18n="svc.s1.name">Web Design</h3>
+            <p class="svc-desc" data-i18n="svc.s1.desc">Custom UI/UX design crafted around your brand identity — unique, intentional and built to engage.</p>
+          </div>
+          <span class="svc-arrow">↗</span>
+        </li>
+        <li class="svc">
+          <span class="svc-num">02</span>
+          <div class="svc-body">
+            <h3 class="svc-name" data-i18n="svc.s2.name">Web Development</h3>
+            <p class="svc-desc" data-i18n="svc.s2.desc">Full-stack development — clean code, fast performance, and pixel-perfect across every device.</p>
+          </div>
+          <span class="svc-arrow">↗</span>
+        </li>
+        <li class="svc">
+          <span class="svc-num">03</span>
+          <div class="svc-body">
+            <h3 class="svc-name" data-i18n="svc.s3.name">Hosting &amp; Deployment</h3>
+            <p class="svc-desc" data-i18n="svc.s3.desc">Managed hosting with fast CDN delivery, zero-downtime deployments and continuous updates.</p>
+          </div>
+          <span class="svc-arrow">↗</span>
+        </li>
+        <li class="svc">
+          <span class="svc-num">04</span>
+          <div class="svc-body">
+            <h3 class="svc-name" data-i18n="svc.s4.name">Privacy &amp; Security</h3>
+            <p class="svc-desc" data-i18n="svc.s4.desc">SSL, GDPR compliance, data protection and security monitoring to keep your users safe.</p>
+          </div>
+          <span class="svc-arrow">↗</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="about" id="about">
+    <div class="about-inner">
+      <div class="about-left">
+        <span class="eyebrow" data-i18n="about.label">The Studio</span>
+        <p class="about-statement">
+          <span class="clip-wrap"><span class="clip-inner"          data-i18n="about.l1">A boutique studio</span></span>
+          <span class="clip-wrap"><span class="clip-inner about-em" data-i18n="about.l2">crafting high-performance</span></span>
+          <span class="clip-wrap"><span class="clip-inner"          data-i18n="about.l3">websites for every brand.</span></span>
+        </p>
+        <p class="about-body" data-i18n="about.body">Every project is built from scratch — no templates, no shortcuts. We combine strategy, design and engineering into digital experiences that look great and convert.</p>
+      </div>
+      <div class="about-right">
+        <div class="stat">
+          <span class="stat-val">+10</span>
+          <span class="stat-lbl" data-i18n="about.stat1">Live Projects</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">100%</span>
+          <span class="stat-lbl" data-i18n="about.stat2">Custom Builds</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">4</span>
+          <span class="stat-lbl" data-i18n="about.stat3">Core Services</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE 2 (dark) ===== -->
+  <div class="marquee marquee--dark" aria-hidden="true">
+    <div class="marquee-track marquee-track--rev">
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+      <span>LET'S BUILD SOMETHING GREAT</span><span class="m-dot">·</span>
+    </div>
+  </div>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <span class="eyebrow eyebrow--pale" data-i18n="contact.label">Get in Touch</span>
+      <h2 class="contact-title">
+        <span class="clip-wrap"><span class="clip-inner"            data-i18n="contact.l1">Let's work</span></span>
+        <span class="clip-wrap"><span class="clip-inner contact-em" data-i18n="contact.l2">together.</span></span>
+      </h2>
+      <div class="channels">
+        <!-- TODO: Replace studio@kauffen.studio with your actual email -->
+        <a href="mailto:studio@kauffen.studio" class="channel" data-cursor="EMAIL">
+          <div class="ch-info">
+            <span class="ch-lbl">Email</span>
+            <span class="ch-val">studio@kauffen.studio</span>
+          </div>
+          <span class="ch-arrow">↗</span>
+        </a>
+        <a href="https://instagram.com/kauffen.studio" target="_blank" rel="noopener noreferrer" class="channel" data-cursor="FOLLOW">
+          <div class="ch-info">
+            <span class="ch-lbl">Instagram</span>
+            <span class="ch-val">@kauffen.studio</span>
+          </div>
+          <span class="ch-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <a href="#" class="logo logo--light" aria-label="Kauffen Studio">
+          <span class="logo-mark" aria-hidden="true">
+            <svg class="mark-svg" viewBox="0 0 36 36" fill="none">
+              <circle class="ring-a" cx="18" cy="18" r="14" stroke="currentColor" stroke-width="1.1" stroke-dasharray="4.5 7"/>
+              <circle class="ring-b" cx="18" cy="18" r="8"  stroke="currentColor" stroke-width="1.3" stroke-dasharray="6.5 5"/>
+              <circle cx="18" cy="18" r="1.8" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="logo-text">
+            <span class="logo-kf">KAUFFEN</span>
+            <span class="logo-st">STUDIO</span>
+          </span>
+        </a>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#work"     data-i18n="nav.work">Work</a>
+          <a href="#services" data-i18n="nav.services">Services</a>
+          <a href="#about"    data-i18n="nav.about">About</a>
+          <a href="#contact"  data-i18n="nav.contact">Contact</a>
+        </nav>
+        <div class="lang-toggle lang-toggle--ft" id="langToggleFt" aria-label="Toggle language">
+          <button class="lang-opt" data-lang="en" onclick="applyLang('en')">EN</button>
+          <span class="lang-pill" id="langPillFt"></span>
+          <button class="lang-opt" data-lang="pt" onclick="applyLang('pt')">PT</button>
+        </div>
+      </div>
+      <div class="footer-bot">
+        <span class="footer-copy">© 2025 Kauffen Studio</span>
+        <span class="footer-tag" data-i18n="footer.tag">Crafted with precision.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
