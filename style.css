@@ -72,6 +72,7 @@ body.intro-active { overflow: hidden; }
 .intro-msg-wrap {
   overflow: hidden;
   padding-bottom: .28em;
+  min-height: 1.4em; /* prevent collapse when message el is empty */
 }
 .intro-msg {
   display: block;
@@ -82,6 +83,7 @@ body.intro-active { overflow: hidden; }
   line-height: 1.1;
   color: #ffffff;
   will-change: transform;
+  transform: translateY(160px); /* start below the clip area */
 }
 .intro-msg--final {
   font-style: italic;

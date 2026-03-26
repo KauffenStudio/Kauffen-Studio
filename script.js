@@ -48,7 +48,15 @@ function initIntro(onComplete) {
   intro.addEventListener('click', () => exitIntro(true), { once: true });
   document.addEventListener('keydown', onKey, { once: true });
 
-  masterTl = gsap.timeline({ onComplete: () => exitIntro(false) });
+  // Safety net: if something goes wrong, always exit after 12s
+  const safetyTimer = setTimeout(() => exitIntro(true), 12000);
+  const _origExit = exitIntro;
+  const exitIntroSafe = (instant) => { clearTimeout(safetyTimer); _origExit(instant); };
+  // Patch the references
+  intro.removeEventListener('click', () => exitIntro(true));
+  intro.addEventListener('click', () => exitIntroSafe(true), { once: true });
+
+  masterTl = gsap.timeline({ onComplete: () => exitIntroSafe(false) });
 
   msgs.forEach((text, i) => {
     const isLast = i === msgs.length - 1;
@@ -57,16 +65,17 @@ function initIntro(onComplete) {
 
     masterTl
       .call(() => {
-        gsap.set(msgEl, { y: '110%' });
+        // Use large fixed-pixel offset — reliable even when element starts empty
         msgEl.textContent = text;
         msgEl.classList.toggle('intro-msg--final', isLast);
         if (counter) counter.textContent = `0${i + 1} — 0${msgs.length}`;
+        gsap.set(msgEl, { y: 160 }); // set AFTER text so height is computed
       })
       .to(msgEl, { y: 0, duration: inDur, ease: 'power4.out' })
       .to({}, { duration: hold }); // hold
 
     if (!isLast) {
-      masterTl.to(msgEl, { y: '-110%', duration: .3, ease: 'power4.in' });
+      masterTl.to(msgEl, { y: -160, duration: .3, ease: 'power4.in' });
     }
   });
 
